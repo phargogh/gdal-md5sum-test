@@ -13,7 +13,7 @@ def md5sum(file_uri):
             An md5sum of the input file"""
 
     block_size = 2**20
-    file_handler = open(uri, 'rb')  # open in binary to ensure compatibility
+    file_handler = open(file_uri, 'rb')  # open in binary to ensure compatibility
     md5 = hashlib.md5()
     while True:
         data = file_handler.read(block_size)
