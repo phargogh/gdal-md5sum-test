@@ -34,41 +34,43 @@ def md5sum(file_uri):
     return md5.hexdigest()
 
 def main():
-    base_raster = 'landuse_cur_200m.tif'
-    base_nodata = pygeoprocessing.get_nodata_from_uri(base_raster)
-    base_pixel_size = pygeoprocessing.get_cell_size_from_uri(base_raster)
     system = platform.platform()
     logfile_uri = 'md5_check_%s.log' % system
-
     logfile = open(logfile_uri, 'w')
-
     _write = lambda x: logfile.write(x + '\n')
 
-    _write('System: %s' % system)
-    _write('Python %s' % platform.python_version())
-    _write('GDAL version: %s' % gdal.__version__)
-    _write('numpy version: %s' % numpy.__version__)
-    _write('scipy version: %s' % scipy.__version__)
-    _write('base MD5sum: %s' % md5sum(base_raster))
+    for base_raster in ['landuse_cur_200m.tif', 'gaussian.tif']:
+        if base_raster == 'gaussian.tif':
+            src_ds = 'landuse_cur_200m.tif'
+            dest_ds = 'gaussian.tif'
+            nodata = pygeoprocessing.get_nodata_from_uri(src_ds)
+            pygeoprocessing.gaussian_filter_dataset_uri(
+                src_ds, 4, dest_ds, nodata)
 
-    for gdal_type, gdal_type_label in GDAL_DTYPES.iteritems():
-        if gdal_type_label in ['GDT_Unknown', 'GDT_TypeCount']:
-            continue
+        _write(base_raster + '\n')
+        base_nodata = pygeoprocessing.get_nodata_from_uri(base_raster)
+        base_pixel_size = pygeoprocessing.get_cell_size_from_uri(base_raster)
 
-        print gdal_type_label
+        _write('System: %s' % system)
+        _write('Python %s' % platform.python_version())
+        _write('GDAL version: %s' % gdal.__version__)
+        _write('numpy version: %s' % numpy.__version__)
+        _write('scipy version: %s' % scipy.__version__)
+        _write('base MD5sum: %s' % md5sum(base_raster))
 
-        # convert the raster (via vectorize_datasets) to a new dtype
-        new_uri = '%s.tif' % gdal_type_label
-        pygeoprocessing.vectorize_datasets([base_raster], lambda x: x,
-            new_uri, gdal_type, base_nodata, base_pixel_size, 'intersection')
+        for gdal_type, gdal_type_label in GDAL_DTYPES.iteritems():
+            if gdal_type_label in ['GDT_Unknown', 'GDT_TypeCount']:
+                continue
 
-        _write("%-15s: %s" % (gdal_type_label, md5sum(new_uri)))
+            print gdal_type_label
 
+            # convert the raster (via vectorize_datasets) to a new dtype
+            new_uri = '%s.tif' % gdal_type_label
+            pygeoprocessing.vectorize_datasets([base_raster], lambda x: x,
+                new_uri, gdal_type, base_nodata, base_pixel_size, 'intersection')
 
-
-    # write the 
-
-
+            _write("%-15s: %s" % (gdal_type_label, md5sum(new_uri)))
+        _write('\n')
 
 
 if __name__ == '__main__':
