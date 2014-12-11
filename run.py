@@ -4,6 +4,8 @@ import platform
 import sys
 
 from osgeo import gdal
+import numpy
+import scipy
 import pygeoprocessing
 
 GDAL_DTYPES = {}
@@ -43,6 +45,9 @@ def main():
     _write = lambda x: logfile.write(x + '\n')
 
     _write('System: %s' % system)
+    _write('GDAL version: %s' % gdal.__version__)
+    _write('numpy version: %s' % numpy.__version__)
+    _write('scipy version: %s' % scipy.__version__)
     _write('base MD5sum: %s' % md5sum(base_raster))
 
     for gdal_type, gdal_type_label in GDAL_DTYPES.iteritems():
