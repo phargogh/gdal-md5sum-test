@@ -45,6 +45,7 @@ def main():
     _write = lambda x: logfile.write(x + '\n')
 
     _write('System: %s' % system)
+    _write('Python %s' % platform.python_version())
     _write('GDAL version: %s' % gdal.__version__)
     _write('numpy version: %s' % numpy.__version__)
     _write('scipy version: %s' % scipy.__version__)
