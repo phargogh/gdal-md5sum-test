@@ -22,7 +22,7 @@ Environment Setup and Running on Windows
 ----------------------------------------
 ``C:\Python27\Scripts\virtualenv env --system-site-packages``
 
-``env\Scripts\pip.exe install git+git://github.com/natcap/pygeoprocessing.git``
+``env\Scripts\pip.exe install hg+https://bitbucket.org/richpsharp/pygeoprocessing``
 
 ``env\Scripts\python.exe run.py``
 
